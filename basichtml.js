@@ -1,6 +1,8 @@
 const utils = require('./src/utils');
 const CustomElementRegistry = require('./src/CustomElementRegistry');
 const Document = require('./src/Document');
+const HTMLElement = require('./src/HTMLElement');
+
 module.exports = {
   Attr: require('./src/Attr'),
   CharacterData: require('./src/CharacterData'),
@@ -15,7 +17,7 @@ module.exports = {
   Element: require('./src/Element'),
   Event: require('./src/Event'),
   EventTarget: require('./src/EventTarget'),
-  HTMLElement: require('./src/HTMLElement'),
+  HTMLElement: HTMLElement,
   HTMLHtmlElement: require('./src/HTMLHtmlElement'),
   HTMLTemplateElement: require('./src/HTMLTemplateElement'),
   Node: require('./src/Node'),
@@ -28,13 +30,10 @@ module.exports = {
                             new CustomElementRegistry();
     window.document = new Document(window.customElements);
     window.window = window;
-    if (options.selector) {
-      const query = options.selector.$;
-      const selector = require(options.selector.name);
-      utils.querySelectorAll = function querySelectorAll(css) {
-        return query(selector, this, css);
-      };
-    }
+    window.HTMLElement = options.HTMLElement || HTMLElement;
+
+    if (options.withSizzelSelectorEngine) require('./src/withSizzelSelectorEngine');
+
     return window;
   }
 };
